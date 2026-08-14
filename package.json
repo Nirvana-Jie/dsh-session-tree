@@ -1,0 +1,52 @@
+{
+  "name": "@nirvana-jie/dsh-session-tree",
+  "version": "0.1.0",
+  "description": "Immutable branch trees, forks, and comparisons for DeepSeek Harness sessions.",
+  "type": "module",
+  "license": "MIT",
+  "author": {
+    "name": "Nirvana-Jie",
+    "email": "1357711537@qq.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Nirvana-Jie/dsh-session-tree.git"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "sideEffects": false,
+  "bin": {
+    "dsh-session-tree": "./dist/cli.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": "^22.19.0 || >=24.0.0"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "lint": "oxlint --deny-warnings src tests vitest.config.ts",
+    "publint": "publint",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "check": "pnpm test:coverage && pnpm typecheck && pnpm lint && pnpm build && pnpm publint"
+  },
+  "devDependencies": {
+    "@types/node": "^22.19.0",
+    "@vitest/coverage-v8": "^4.1.8",
+    "oxlint": "^1.76.0",
+    "publint": "^0.3.21",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.8"
+  },
+  "packageManager": "pnpm@11.7.0"
+}
