@@ -16,7 +16,7 @@ See every fork and subagent in your [DeepSeek Harness](https://github.com/deepse
 
 Start with one real prompt, create a child from the completed session, continue with inherited context, inspect the resulting lineage, and reopen the parent—all inside DSH Web.
 
-<p align="center"><a href="docs/assets/dsh-session-tree-demo.mp4"><strong>▶ Watch the 35-second real workflow</strong></a></p>
+https://github.com/user-attachments/assets/5e475722-7b1c-4383-9b66-7881f6799420
 
 ## Why it helps
 

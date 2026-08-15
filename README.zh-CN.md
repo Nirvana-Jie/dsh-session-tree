@@ -16,7 +16,7 @@
 
 从一次真实输入开始，从已完成的会话创建子分支，继承上下文继续工作，查看形成的谱系，再重新打开父会话——所有操作都在 DSH Web 内完成。
 
-<p align="center"><a href="docs/assets/dsh-session-tree-demo.mp4"><strong>▶ 播放 35 秒真实工作流</strong></a></p>
+https://github.com/user-attachments/assets/5e475722-7b1c-4383-9b66-7881f6799420
 
 ## 为什么有用
 
