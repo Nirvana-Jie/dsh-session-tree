@@ -1,0 +1,3 @@
+- insert:
+    - id: session-tree
+      name: '@nirvana-jie/dsh-session-tree'

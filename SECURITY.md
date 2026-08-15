@@ -2,10 +2,14 @@
 
 ## Reporting a vulnerability
 
-Please use GitHub's private vulnerability reporting for this repository. Do not open a public issue containing private session logs, credentials, or exploitable examples.
+Please use GitHub's private vulnerability reporting for this repository. Do not open a public issue containing private session identifiers, workspace paths, credentials, or exploitable examples.
 
 ## Data handling
 
-DeepSeek Harness session logs may contain prompts, file contents, command output, and credentials. `dsh-session-tree` validates and freezes imported values but does not redact the source data. The standalone HTML renderer includes only session identifiers, timestamps, and seed lengths and HTML-escapes each value; treat both the input artifacts and generated output according to your deployment's data policy.
+`dsh-session-tree` reads DSH's live session-list metadata in the user's browser. It displays session titles and IDs, parent relationships, workspace paths, agent presets, status, and recent activity. It does not read message bodies, tool calls, command output, or plaintext session logs.
+
+Open and fork actions use the DSH client session service. DSH remains responsible for authorization, persistence, stable-turn selection, and session mutation. The plugin does not add a remote endpoint or export session data.
+
+Install only plugin sources you trust. A Git dependency may run this package's `prepare` build during installation after the user explicitly allows it through pnpm.
 
 The project is pre-release. No version currently carries a long-term compatibility or security-support promise.
