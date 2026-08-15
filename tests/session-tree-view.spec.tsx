@@ -4,6 +4,7 @@ import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-li
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import type { SessionId, SessionListState, SessionSummary } from '@deepseek-ai/dsh-client-runtime/client'
 import { SessionTreeView, type SessionTreeViewProps } from '../src/client/SessionTreeView.js'
+import { LineageTitleError } from '../src/client/lineage-fork.js'
 import { en } from '../src/client/locales.js'
 
 afterEach(cleanup)
@@ -131,6 +132,20 @@ describe('SessionTreeView', () => {
     await waitFor(() => { expect(forkSession).toHaveBeenCalledWith(child.id) })
     expect(await screen.findByRole('alert')).toHaveTextContent(
       'Branch created, but could not open it: navigation unavailable',
+    )
+    expect(screen.queryByText(/Could not create branch/)).not.toBeInTheDocument()
+  })
+
+  it('opens a durable child even when its lineage title cannot be persisted', async () => {
+    const { forkSession, openSession } = renderView()
+
+    fireEvent.click(screen.getByRole('treeitem', { name: /Try deterministic clock/ }))
+    forkSession.mockRejectedValueOnce(new LineageTitleError(sid('new-child'), 'title too long'))
+    fireEvent.click(screen.getByRole('button', { name: 'Fork latest stable turn' }))
+
+    await waitFor(() => { expect(openSession).toHaveBeenCalledWith(sid('new-child')) })
+    expect(await screen.findByRole('alert')).toHaveTextContent(
+      'Branch created and opened, but its lineage title could not be saved: title too long',
     )
     expect(screen.queryByText(/Could not create branch/)).not.toBeInTheDocument()
   })

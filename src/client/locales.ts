@@ -32,6 +32,7 @@ export type SessionTreeLocaleKey =
   | 'action.fork'
   | 'action.forking'
   | 'feedback.createFailed'
+  | 'feedback.titleFailed'
   | 'feedback.openFailed'
 
 export const en: Record<SessionTreeLocaleKey, string> = {
@@ -67,6 +68,7 @@ export const en: Record<SessionTreeLocaleKey, string> = {
   'action.fork': 'Fork latest stable turn',
   'action.forking': 'Creating branch…',
   'feedback.createFailed': 'Could not create branch: {message}',
+  'feedback.titleFailed': 'Branch created and opened, but its lineage title could not be saved: {message}',
   'feedback.openFailed': 'Branch created, but could not open it: {message}',
 }
 
@@ -103,6 +105,7 @@ export const zh: Record<SessionTreeLocaleKey, string> = {
   'action.fork': '从最近稳定回合创建分支',
   'action.forking': '正在创建分支…',
   'feedback.createFailed': '无法创建分支：{message}',
+  'feedback.titleFailed': '分支已创建并打开，但无法保存谱系标题：{message}',
   'feedback.openFailed': '分支已创建，但无法打开：{message}',
 }
 

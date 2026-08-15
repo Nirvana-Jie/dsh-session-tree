@@ -19,6 +19,7 @@ import {
   StateDot,
   type StateDotState,
 } from '@deepseek-ai/dsh-client-ui-primitives'
+import { LineageTitleError } from './lineage-fork.js'
 import { buildSessionTree, type SessionRelation, type SessionTreeNode } from './session-tree.js'
 
 /** DSH-owned navigation actions injected by the plugin registration. */
@@ -341,6 +342,17 @@ export function SessionTreeView({
         }))
       }
     } catch (error) {
+      if (error instanceof LineageTitleError) {
+        try {
+          openSession(error.childId)
+          setForkError(t('feedback.titleFailed', { message: error.message }))
+        } catch (openError) {
+          setForkError(t('feedback.openFailed', {
+            message: openError instanceof Error ? openError.message : String(openError),
+          }))
+        }
+        return
+      }
       setForkError(t('feedback.createFailed', {
         message: error instanceof Error ? error.message : String(error),
       }))

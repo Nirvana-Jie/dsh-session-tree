@@ -11,7 +11,7 @@ The product job is to put the developer in the correct durable session context b
 | Layer | Responsibility |
 | --- | --- |
 | DSH | Session truth, persistence, current-session navigation, stable-turn fork semantics, Chat and Trajectory views, theme tokens, and shared controls |
-| Session Tree | Pure lineage projection, local selection/focus/expansion state, relationship presentation, and orchestration of DSH open/fork operations |
+| Session Tree | Pure lineage projection, local selection/focus/expansion state, relationship presentation, lineage-title derivation, and orchestration of DSH open/fork/rename operations |
 
 The plugin therefore has no router, log parser, persistence format, message cache, or independent application shell.
 
@@ -64,18 +64,20 @@ DSH keeps ordinary list rows in `SessionListState.ids` and may keep the currentl
 
 The projection never fetches or copies message bodies, tool calls, or session-log events.
 
+An ordinary fork receives a **lineage title**. The plugin takes the parent's exact durable title and appends the next local ordinal used by its direct ordinary-fork children: `Task → Task (1) → Task (1) (1)`. The ordinal is one greater than the greatest matching sibling ordinal, so gaps below the current maximum are not filled. Descendants, subagents, and titles from the former trailing-number scheme do not affect that local sequence. If the parent has no durable title, the plugin leaves the inherited DSH title unchanged.
+
 ## Interaction ownership
 
 Selecting, focusing, expanding, or collapsing a node changes only component-local state. The current session's ancestor path is expanded on entry, while unrelated branches remain collapsed. The tree uses roving focus and WAI-ARIA single-select tree behavior: Left/Right collapse or traverse a level, Up/Down traverse visible nodes, Home/End reach the visible boundaries, and a typed initial finds the next matching title.
 
 Actions cross back into DSH through injected services:
 
-- **Open session** calls `ctx.sessions.open(sessionId)` through the documented Sessions service.
-- **Fork latest stable turn** calls `ctx.sessions.fork({ sessionId, increaseTitle: true })`, then opens the returned child ID through that same Sessions service.
+- **Open session** calls `ctx.conversation.openSession(sessionId, 'chat')`, the documented DSH operation that selects both a durable session and an explicit conversation view.
+- **Fork latest stable turn** calls `ctx.sessions.fork({ sessionId })`. After DSH makes the child locally addressable, the plugin derives its lineage title from the latest session-list snapshot, persists it through `ctx.sessions.binding(childId).session.rename(title)`, and opens the returned child ID in Chat through the Conversation service.
 
-DSH chooses the stable fork boundary, creates and persists the child, updates the session store, owns per-session active-view state, and performs navigation. The plugin only sequences public DSH operations. It does not write session files, synthesize lineage metadata, or mutate a parent session.
+DSH chooses the stable fork boundary, creates and persists the child, updates the session store, validates and persists the rename, owns per-session active-view state, and performs navigation. The plugin only derives a title and sequences public DSH operations. It does not write session files, synthesize lineage metadata outside DSH, or mutate a parent session. If title persistence fails after creation, the error retains the durable child ID; the view opens that child and reports the title failure instead of falsely reporting that creation failed.
 
-Chat and Trajectory remain sibling DSH `conversation.view` entries. DSH owns each session's active-view state, and a newly created child has no prior selection, so it resolves to the stable Chat default when Session Tree opens it. The plugin does not duplicate the Trajectory ledger, invent Conversation methods, or write Conversation's private active-view store.
+Chat and Trajectory remain sibling DSH `conversation.view` entries. DSH owns each session's active-view state and applies the plugin's explicit `chat` destination through its public Conversation service, including when the target session has not rendered yet. The plugin does not duplicate the Trajectory ledger, query rendered tabs, or write Conversation's private active-view store.
 
 ## Web presentation
 

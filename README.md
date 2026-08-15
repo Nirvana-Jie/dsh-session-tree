@@ -25,7 +25,7 @@ Agent work rarely stays linear. A debugging session forks into an experiment, a 
 | When you need to… | Session Tree gives you… |
 | --- | --- |
 | Return to a long-running task | The root, its descendants, and the currently open session in one view |
-| Try a risky alternative | A one-click fork from the selected session's latest stable turn |
+| Try a risky alternative | A one-click fork from the selected session's latest stable turn, with its ancestry preserved in the title |
 | Follow delegated work | Subagents distinguished from ordinary forks in the same lineage |
 | Navigate a large lineage | The current path expanded by default, unrelated branches collapsed, and standard tree keyboard controls |
 | Resume the correct context | Session title, ID, parent, workspace, preset, status, and recent activity before you open it |
@@ -40,6 +40,7 @@ Agent work rarely stays linear. A debugging session forks into an experiment, a 
 - **Privacy-safe workspace context.** Home-directory prefixes are displayed as `~`, so local account names do not appear in the view, screenshots, or recordings.
 - **Native navigation.** Select any node and open that exact session through DSH; a newly forked session starts in Chat.
 - **Safe branching.** Create a child from the latest stable turn through DSH's native fork operation, then continue directly in the new branch.
+- **Lineage-preserving titles.** Each ordinary fork appends a local sibling ordinal to its exact parent title: `Task → Task (1) → Task (1) (1)`. Additional children of the same parent advance only the final ordinal.
 - **Fork and subagent semantics.** Roots, ordinary forks, and delegated subagents have distinct labels and visual markers.
 - **DSH-native presentation.** Session Tree lives beside Chat and Trajectory, uses DSH controls and theme tokens, and ships English and Chinese UI text.
 
@@ -76,7 +77,7 @@ The plugin contributes its own `cordis.patch.yml`; no manual edit to the DSH rep
 1. Open or create a session in DSH Web.
 2. Choose **Session Tree** beside **Chat** and **Trajectory**.
 3. Expand or collapse branches and select a root, fork, or subagent to inspect its context. Keyboard users can use the arrow keys, Home/End, Enter, or a title's first character.
-4. Choose **Open session** to select that exact DSH session, or choose **Fork latest stable turn** to create a branch and enter the new session's Chat view.
+4. Choose **Open session** to select that exact DSH session, or choose **Fork latest stable turn** to create a lineage-titled branch and enter the new session's Chat view.
 5. Continue the conversation, or switch to DSH's **Trajectory** tab to inspect the selected branch's execution ledger.
 
 The tree updates from DSH's live session store. New forks and subagents appear in the lineage as the Harness reports them.
@@ -94,7 +95,7 @@ flowchart LR
   C --> T["DSH Trajectory when selected"]
 ```
 
-The package is both a DSH bundle and a browser client plugin. Its bundle layer activates the package in the `web` profile; the client registers a `conversation.view` contribution and receives the session store, navigation, fork operations, and UI primitives from DSH. The view only projects session metadata. DSH remains the owner of session persistence, mutations, and the active Chat or Trajectory view.
+The package is both a DSH bundle and a browser client plugin. Its bundle layer activates the package in the `web` profile; the client registers a `conversation.view` contribution and receives the session store, navigation, fork, and rename operations plus UI primitives from DSH. The plugin derives each new fork's lineage title from the selected parent and its direct fork children, then asks DSH to persist it. The view only projects session metadata; DSH remains the owner of session persistence, mutations, and the active Chat or Trajectory view.
 
 Read [Architecture](docs/architecture.md) for the package boundaries, lifecycle, view model, and extension rules.
 

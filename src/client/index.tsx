@@ -3,12 +3,13 @@ import type { Context } from '@deepseek-ai/cordis'
 import type { SessionId } from '@deepseek-ai/dsh-client-runtime/client'
 import type {} from '@deepseek-ai/dsh-client-locale/client'
 import type {} from '@deepseek-ai/dsh-client-ui-conversation/client'
+import { forkLineageSession } from './lineage-fork.js'
 import { en, NS, zh } from './locales.js'
 import { SessionTreeView, type SessionTreeViewInjected } from './SessionTreeView.js'
 import { installStyles } from './styles.js'
 
 /** Required DSH Web services. */
-export const inject = ['slots', 'sessions', 'locale']
+export const inject = ['slots', 'sessions', 'conversation', 'locale']
 
 /** Register the localized Session Tree conversation view. */
 export function apply(ctx: Context): void {
@@ -23,12 +24,9 @@ export function apply(ctx: Context): void {
     label: () => t('view.label'),
     inject: (): SessionTreeViewInjected => ({
       openSession: (id: SessionId) => {
-        ctx.sessions.open(id)
+        ctx.conversation.openSession(id, 'chat')
       },
-      forkSession: (id: SessionId) => ctx.sessions.fork({
-        sessionId: id,
-        increaseTitle: true,
-      }),
+      forkSession: (id: SessionId) => forkLineageSession(ctx.sessions, id),
     }),
   }, SessionTreeView))
 }

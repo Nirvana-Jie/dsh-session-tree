@@ -32,9 +32,26 @@ declare module '@deepseek-ai/dsh-client-runtime/client' {
     readonly currentAddress: unknown
   }
 
+  export interface SessionFace {
+    rename(title: string): Promise<
+      | { readonly ok: true; readonly value: { readonly title: string; readonly seq: number } }
+      | { readonly ok: false; readonly error: { readonly code: string; readonly message: string } }
+    >
+  }
+
+  export interface SessionBinding {
+    readonly session: SessionFace
+  }
+
+  export interface ObservableSnapshot<Value> {
+    getSnapshot(): Value
+    subscribe(listener: () => void): () => void
+  }
+
   export interface ISessions {
-    open(id: SessionId): void
+    readonly list: ObservableSnapshot<SessionListState>
     fork(options: { sessionId: SessionId; atSeq?: number; increaseTitle?: boolean }): Promise<SessionId>
+    binding(id: SessionId): SessionBinding | undefined
   }
 }
 
@@ -57,6 +74,10 @@ declare module '@deepseek-ai/dsh-client-ui-slots' {
 declare module '@deepseek-ai/dsh-client-ui-conversation/client' {
   import type { SessionId, SessionListState } from '@deepseek-ai/dsh-client-runtime/client'
 
+  export interface IConversation {
+    openSession(sessionId: SessionId, viewId: string): void
+  }
+
   export interface ConvViewProps {
     readonly sessionId: SessionId
     readonly useSessions: <Selected>(selector: (state: SessionListState) => Selected) => Selected
@@ -67,6 +88,7 @@ declare module '@deepseek-ai/dsh-client-locale/client' {}
 
 declare module '@deepseek-ai/cordis' {
   import type { ISessions } from '@deepseek-ai/dsh-client-runtime/client'
+  import type { IConversation } from '@deepseek-ai/dsh-client-ui-conversation/client'
 
   export interface Context {
     effect(factory: () => void | (() => void), label?: string): void
@@ -77,6 +99,7 @@ declare module '@deepseek-ai/cordis' {
       ): () => void
       bind(namespace: string): (key: string, params?: Record<string, unknown>) => string
     }
+    readonly conversation: IConversation
     readonly sessions: ISessions
     readonly slots: {
       inject(name: string, factory: () => (() => void)): void
