@@ -35,9 +35,6 @@ declare module '@deepseek-ai/dsh-client-runtime/client' {
   export interface ISessions {
     open(id: SessionId): void
     fork(options: { sessionId: SessionId; atSeq?: number; increaseTitle?: boolean }): Promise<SessionId>
-    scope(id: SessionId): {
-      get(name: 'conversation'): { showChat(): void } | undefined
-    } | undefined
   }
 }
 

@@ -321,6 +321,7 @@ const CSS = `
 .dst-fact dt {
   color: var(--dsw-alias-label-tertiary);
   font: var(--dsw-font-xxxs-11);
+  line-height: 17px;
 }
 
 .dst-fact dd {
@@ -329,6 +330,7 @@ const CSS = `
   overflow-wrap: anywhere;
   color: var(--dsw-alias-label-secondary);
   font: var(--dsw-font-xxs-12);
+  line-height: 17px;
 }
 
 .dst-fact code {

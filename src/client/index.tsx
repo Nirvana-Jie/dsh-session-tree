@@ -8,7 +8,7 @@ import { SessionTreeView, type SessionTreeViewInjected } from './SessionTreeView
 import { installStyles } from './styles.js'
 
 /** Required DSH Web services. */
-export const inject = ['slots', 'sessions', 'locale', 'conversation']
+export const inject = ['slots', 'sessions', 'locale']
 
 /** Register the localized Session Tree conversation view. */
 export function apply(ctx: Context): void {
@@ -23,11 +23,6 @@ export function apply(ctx: Context): void {
     label: () => t('view.label'),
     inject: (): SessionTreeViewInjected => ({
       openSession: (id: SessionId) => {
-        const scoped = ctx.sessions.scope(id)
-        if (scoped === undefined) throw new Error(`dsh-session-tree: session "${id}" resolved no scope`)
-        const conversation = scoped.get('conversation')
-        if (conversation === undefined) throw new Error('dsh-session-tree: conversation service unavailable')
-        conversation.showChat()
         ctx.sessions.open(id)
       },
       forkSession: (id: SessionId) => ctx.sessions.fork({

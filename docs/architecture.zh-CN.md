@@ -24,7 +24,7 @@ flowchart LR
   C --> S["conversation.view slot"]
   D["DSH 会话服务"] --> M["谱系投影"]
   M --> S
-  S --> A["DSH 按 scope 寻址的对话 / 打开 / fork 操作"]
+  S --> A["DSH 会话打开 / fork 操作"]
   A --> V["DSH 对话 / 轨迹"]
 ```
 
@@ -70,12 +70,12 @@ DSH 把常规列表行放在 `SessionListState.ids` 中，但当前通过地址�
 
 操作通过注入服务回到 DSH：
 
-- **打开会话** 先解析目标会话 scope，调用其中的 `ctx.conversation.showChat()`，再调用 `ctx.sessions.open(sessionId)`。
-- **从最近稳定回合创建分支** 调用 `ctx.sessions.fork({ sessionId, increaseTitle: true })`，再对返回的子会话 ID 执行相同的“先激活对话、再打开会话”流程。
+- **打开会话** 通过已记录的 Sessions 服务调用 `ctx.sessions.open(sessionId)`。
+- **从最近稳定回合创建分支** 调用 `ctx.sessions.fork({ sessionId, increaseTitle: true })`，再通过同一个 Sessions 服务打开返回的子会话 ID。
 
 稳定分叉边界的选择、子会话创建与持久化、会话存储更新、逐会话活跃视图状态以及导航均由 DSH 负责。插件只编排 DSH 的公共操作，不会写入会话文件、伪造谱系元数据或修改父会话。
 
-“对话”与“轨迹”仍是 DSH 中并列的 `conversation.view` 条目。Session Tree 会先让目标会话按 scope 寻址的 Conversation 服务选择“对话”，再修改当前会话，因此点击 **打开会话** 后会离开谱系索引，并进入正确的真实会话。插件不会复制 Trajectory ledger，也不会写入 Conversation 私有的 active-view store。
+“对话”与“轨迹”仍是 DSH 中并列的 `conversation.view` 条目。每个会话的活跃视图状态由 DSH 持有；新创建的子会话没有历史选择，因此 Session Tree 打开它时会落到稳定的默认“对话”视图。插件不会复制 Trajectory ledger、虚构 Conversation 方法，也不会写入 Conversation 私有的 active-view store。
 
 ## Web 展示
 

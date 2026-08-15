@@ -31,7 +31,8 @@ export type SessionTreeLocaleKey =
   | 'action.open'
   | 'action.fork'
   | 'action.forking'
-  | 'feedback.failed'
+  | 'feedback.createFailed'
+  | 'feedback.openFailed'
 
 export const en: Record<SessionTreeLocaleKey, string> = {
   'view.label': 'Session Tree',
@@ -65,7 +66,8 @@ export const en: Record<SessionTreeLocaleKey, string> = {
   'action.open': 'Open session',
   'action.fork': 'Fork latest stable turn',
   'action.forking': 'Creating branch…',
-  'feedback.failed': 'Could not create branch: {message}',
+  'feedback.createFailed': 'Could not create branch: {message}',
+  'feedback.openFailed': 'Branch created, but could not open it: {message}',
 }
 
 export const zh: Record<SessionTreeLocaleKey, string> = {
@@ -100,7 +102,8 @@ export const zh: Record<SessionTreeLocaleKey, string> = {
   'action.open': '打开会话',
   'action.fork': '从最近稳定回合创建分支',
   'action.forking': '正在创建分支…',
-  'feedback.failed': '无法创建分支：{message}',
+  'feedback.createFailed': '无法创建分支：{message}',
+  'feedback.openFailed': '分支已创建，但无法打开：{message}',
 }
 
 declare module '@deepseek-ai/dsh-client-ui-slots' {

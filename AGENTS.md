@@ -10,3 +10,4 @@
 - Keep React and DSH client packages external to the production browser bundle.
 - Update `README.md` and `README.zh-CN.md`, architecture documents, and locale dictionaries together when their shared behavior changes.
 - Run `pnpm check` before pushing and verify product-visible integration in a real DSH Web profile when the client entry changes.
+- Use Conventional Commits (`git cz`) for commit messages.

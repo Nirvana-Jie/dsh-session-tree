@@ -38,7 +38,7 @@ Agent work rarely stays linear. A debugging session forks into an experiment, a 
 - **Focused navigation.** The current ancestry opens automatically; disclosure controls, arrow keys, Home/End, and title type-ahead move through visible branches.
 - **Clear duplicate titles.** Equal-titled siblings receive a compact unique ID suffix only where disambiguation is needed; complete IDs remain in the detail pane.
 - **Privacy-safe workspace context.** Home-directory prefixes are displayed as `~`, so local account names do not appear in the view, screenshots, or recordings.
-- **Native navigation.** Select any node and land directly in that exact session's DSH Chat view.
+- **Native navigation.** Select any node and open that exact session through DSH; a newly forked session starts in Chat.
 - **Safe branching.** Create a child from the latest stable turn through DSH's native fork operation, then continue directly in the new branch.
 - **Fork and subagent semantics.** Roots, ordinary forks, and delegated subagents have distinct labels and visual markers.
 - **DSH-native presentation.** Session Tree lives beside Chat and Trajectory, uses DSH controls and theme tokens, and ships English and Chinese UI text.
@@ -76,7 +76,7 @@ The plugin contributes its own `cordis.patch.yml`; no manual edit to the DSH rep
 1. Open or create a session in DSH Web.
 2. Choose **Session Tree** beside **Chat** and **Trajectory**.
 3. Expand or collapse branches and select a root, fork, or subagent to inspect its context. Keyboard users can use the arrow keys, Home/End, Enter, or a title's first character.
-4. Choose **Open session** to enter that session directly in **Chat**, or choose **Fork latest stable turn** to create a branch and enter its Chat view.
+4. Choose **Open session** to select that exact DSH session, or choose **Fork latest stable turn** to create a branch and enter the new session's Chat view.
 5. Continue the conversation, or switch to DSH's **Trajectory** tab to inspect the selected branch's execution ledger.
 
 The tree updates from DSH's live session store. New forks and subagents appear in the lineage as the Harness reports them.
@@ -87,14 +87,14 @@ The tree updates from DSH's live session store. New forks and subagents appear i
 flowchart LR
   S["DSH live session store"] --> P["Immutable lineage projection"]
   P --> V["conversation.view: Session Tree"]
-  V --> A["Activate target-scoped DSH Chat"]
-  V --> F["DSH fork stable turn"] --> A
-  A --> O["DSH open session"]
-  O --> C["DSH Chat"]
+  V --> O["DSH open session"]
+  V --> F["DSH fork stable turn"] --> O
+  O --> C["DSH-owned session view"]
+  F --> C2["New branch defaults to Chat"]
   C --> T["DSH Trajectory when selected"]
 ```
 
-The package is both a DSH bundle and a browser client plugin. Its bundle layer activates the package in the `web` profile; the client registers a `conversation.view` contribution and receives the session store, scope-addressed Chat activation, navigation, fork operations, and UI primitives from DSH. The view only projects session metadata. DSH remains the owner of session persistence, mutations, and the active Chat or Trajectory view.
+The package is both a DSH bundle and a browser client plugin. Its bundle layer activates the package in the `web` profile; the client registers a `conversation.view` contribution and receives the session store, navigation, fork operations, and UI primitives from DSH. The view only projects session metadata. DSH remains the owner of session persistence, mutations, and the active Chat or Trajectory view.
 
 Read [Architecture](docs/architecture.md) for the package boundaries, lifecycle, view model, and extension rules.
 
@@ -106,6 +106,8 @@ pnpm check
 ```
 
 `pnpm check` runs the public-interface Vitest coverage gate, type checking, linting, the production build, and package validation.
+
+Commit messages follow [Conventional Commits](https://www.conventionalcommits.org/) and can be created with `git cz`, for example `fix(client): use supported session navigation`.
 
 ## License
 

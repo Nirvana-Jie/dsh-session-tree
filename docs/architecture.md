@@ -24,7 +24,7 @@ flowchart LR
   C --> S["conversation.view slot"]
   D["DSH session service"] --> M["lineage projection"]
   M --> S
-  S --> A["DSH scoped Chat / open / fork actions"]
+  S --> A["DSH session open / fork actions"]
   A --> V["DSH Chat / Trajectory"]
 ```
 
@@ -70,12 +70,12 @@ Selecting, focusing, expanding, or collapsing a node changes only component-loca
 
 Actions cross back into DSH through injected services:
 
-- **Open session** resolves the target session scope, calls its `ctx.conversation.showChat()`, then calls `ctx.sessions.open(sessionId)`.
-- **Fork latest stable turn** calls `ctx.sessions.fork({ sessionId, increaseTitle: true })`, then applies the same Chat-first open sequence to the returned child ID.
+- **Open session** calls `ctx.sessions.open(sessionId)` through the documented Sessions service.
+- **Fork latest stable turn** calls `ctx.sessions.fork({ sessionId, increaseTitle: true })`, then opens the returned child ID through that same Sessions service.
 
 DSH chooses the stable fork boundary, creates and persists the child, updates the session store, owns per-session active-view state, and performs navigation. The plugin only sequences public DSH operations. It does not write session files, synthesize lineage metadata, or mutate a parent session.
 
-Chat and Trajectory remain sibling DSH `conversation.view` entries. Session Tree asks the target session's scoped Conversation service to select Chat before changing the current session, so **Open session** leaves the lineage index and lands in the correct conversation. The plugin does not duplicate the Trajectory ledger or write Conversation's private active-view store.
+Chat and Trajectory remain sibling DSH `conversation.view` entries. DSH owns each session's active-view state, and a newly created child has no prior selection, so it resolves to the stable Chat default when Session Tree opens it. The plugin does not duplicate the Trajectory ledger, invent Conversation methods, or write Conversation's private active-view store.
 
 ## Web presentation
 

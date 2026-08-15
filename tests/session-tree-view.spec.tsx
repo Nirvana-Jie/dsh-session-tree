@@ -119,6 +119,22 @@ describe('SessionTreeView', () => {
     )
   })
 
+  it('does not report a successful branch creation as a creation failure', async () => {
+    const { child, forkSession, openSession } = renderView()
+
+    fireEvent.click(screen.getByRole('treeitem', { name: /Try deterministic clock/ }))
+    openSession.mockImplementationOnce(() => {
+      throw new Error('navigation unavailable')
+    })
+    fireEvent.click(screen.getByRole('button', { name: 'Fork latest stable turn' }))
+
+    await waitFor(() => { expect(forkSession).toHaveBeenCalledWith(child.id) })
+    expect(await screen.findByRole('alert')).toHaveTextContent(
+      'Branch created, but could not open it: navigation unavailable',
+    )
+    expect(screen.queryByText(/Could not create branch/)).not.toBeInTheDocument()
+  })
+
   it('exposes a collapsible single-select tree with standard keyboard navigation', () => {
     renderView()
 

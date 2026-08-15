@@ -333,9 +333,15 @@ export function SessionTreeView({
     setForkError(null)
     try {
       const childId = await forkSession(selected.summary.id)
-      openSession(childId)
+      try {
+        openSession(childId)
+      } catch (error) {
+        setForkError(t('feedback.openFailed', {
+          message: error instanceof Error ? error.message : String(error),
+        }))
+      }
     } catch (error) {
-      setForkError(t('feedback.failed', {
+      setForkError(t('feedback.createFailed', {
         message: error instanceof Error ? error.message : String(error),
       }))
     } finally {
